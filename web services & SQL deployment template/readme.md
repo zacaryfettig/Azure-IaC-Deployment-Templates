@@ -1,1 +1,1 @@
-# Deploying infrastructure for a web app and an SQL based Database
+# Deploying infrastructure for a web app with SQL based Database
