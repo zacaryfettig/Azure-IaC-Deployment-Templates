@@ -8,20 +8,13 @@ var appName = 'webapp'
 ])
 param environment string
 
-@description('storing web content')
-resource storage1 'Microsoft.Storage/storageAccounts@2022-09-01' = {
-  name: 'uniquename2'
-  location: location
-  sku: {
-    name: 'Standard_LRS'
-  }
-  kind: 'BlobStorage'
-}
+@description('vnet')
+var vnetName = '${appName}vnet'
+var vnetAddressPrefix = '10.10.30.0/16'
+var subnetName = '${appName}sn'
+var subnetAddressPrefix = '10.10.30.0/24'
 
-resource blobcontainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
-  name: 'blob'
-}
-
+@description('SQL Server to host database')
 resource sqlServer 'Microsoft.Sql/servers@2014-04-01' ={
   name: 'unique name1'
   location: location
@@ -32,22 +25,112 @@ resource sqlServer 'Microsoft.Sql/servers@2014-04-01' ={
   }
 }
 
+@description('SQL Database')
 resource sqlServerDatabase 'Microsoft.Sql/servers/databases@2014-04-01' = {
   parent: sqlServer
   name: '${appName}-sqldatabase${environment}'
   location: location
+ sku: {
+  name: 'basic'
+  tier: 'basic'
+ }
+}
+
+
+@description('Connect SQL to AppService over Microsoft backbone')
+resource privateend 'Microsoft.Network/privateEndpoints@2022-07-01' = {
+  name: 'SQLtoAPP'
+}
+
+@description('Store DB Password')
+resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' = {
+  name: 'name'
+  location: location
   properties: {
-    collation: 'SQL_Latin1_General_CP1_CI_AS'
-    edition: 'Basic'
-    maxSizeBytes: '34359738368'
-    requestedServiceObjectiveName: 'Basic'
+    enabledForDeployment: true
+    enabledForTemplateDeployment: true
+    enabledForDiskEncryption: true
+    tenantId: 'tenantId'
+    accessPolicies: [
+      {
+        tenantId: 'tenantId'
+        objectId: 'objectId'
+        permissions: {
+          keys: [
+            'get'
+          ]
+          secrets: [
+            'list'
+            'get'
+          ]
+        }
+      }
+    ]
+    sku: {
+      name: 'standard'
+      family: 'A'
+    }
   }
 }
 
-resource firewall 'Microsoft.Network/azureFirewalls@2022-07-01' = {
-  name: 
+resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2019-09-01' = {
+  name: 'keyVaultName/name'
+  properties: {
+    value: 'value'
+  }
 }
 
-resource privateend 'Microsoft.Network/privateEndpoints@2022-07-01' = {
-  name: 
+
+@description('virtual network creation')
+resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
+  name: vnetName
+  location: location
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        vnetAddressPrefix
+      ]
+    }
+    subnets: [
+      {
+        name: subnetName
+        properties: {
+          addressPrefix: subnetAddressPrefix
+          delegations: [
+            {
+              name: 'delegation'
+              properties: {
+                serviceName: 'Microsoft.Web/serverFarms'
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+
+resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
+  name: 'name'
+  location: location
+  sku: {
+    //pricing tier
+    name: 'F1'
+    capacity: 1
+  }
+}
+
+resource appService 'Microsoft.Web/sites@2022-03-01' = {
+  name: appName
+  location: location
+  properties: {
+    serverFarmId: appServicePlan.id
+    virtualNetworkSubnetId: vnet.properties.subnets[0].id
+    httpsOnly: true
+    siteConfig: {
+      vnetRouteAllEnabled: true
+      http20Enabled: true
+    }
+
+  }
 }
