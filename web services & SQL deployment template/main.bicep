@@ -1,3 +1,10 @@
+param administratorLogin string
+@secure()
+param administratorLoginPassword string
+
+param tenantID string
+param accountObjectID string = 'fc2cdf01-0d2f-41a9-90f4-25f3064e5344'
+
 var location = 'westus'
 var appName = 'webapp'
 
@@ -14,14 +21,15 @@ var vnetAddressPrefix = '10.10.30.0/16'
 var subnetName = '${appName}sn'
 var subnetAddressPrefix = '10.10.30.0/24'
 
+//add resource group
+
 @description('SQL Server to host database')
 resource sqlServer 'Microsoft.Sql/servers@2014-04-01' ={
   name: 'unique name1'
   location: location
   properties: {
-    administratorLogin: 'db_admin'
-    administratorLoginPassword: '7a3tui5c'
-    //change password to keyvault credential
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
   }
 }
 
@@ -40,7 +48,16 @@ resource sqlServerDatabase 'Microsoft.Sql/servers/databases@2014-04-01' = {
 @description('Connect SQL to AppService over Microsoft backbone')
 resource privateend 'Microsoft.Network/privateEndpoints@2022-07-01' = {
   name: 'SQLtoAPP'
+  location: location
+  
+  properties: { 
+     privateLinkServiceConnections: [
+     
+     ]
+  }
 }
+
+
 
 @description('Store DB Password')
 resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' = {
@@ -50,11 +67,11 @@ resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' = {
     enabledForDeployment: true
     enabledForTemplateDeployment: true
     enabledForDiskEncryption: true
-    tenantId: 'tenantId'
+    tenantId: tenantID
     accessPolicies: [
       {
-        tenantId: 'tenantId'
-        objectId: 'objectId'
+        tenantId: tenantID
+        objectId: accountObjectID
         permissions: {
           keys: [
             'get'
@@ -68,15 +85,16 @@ resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' = {
     ]
     sku: {
       name: 'standard'
-      family: 'A'
+      family: 'A' 
     }
   }
 }
 
 resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2019-09-01' = {
-  name: 'keyVaultName/name'
+  parent: keyVault
+  name: 'sqlPass'
   properties: {
-    value: 'value'
+    value: administratorLoginPassword
   }
 }
 
