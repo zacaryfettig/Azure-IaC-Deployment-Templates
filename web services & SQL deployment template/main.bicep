@@ -1,3 +1,4 @@
+param sqlServerName string = 'sqlserver${uniqueString(resourceGroup().id)}'
 param administratorLogin string
 @secure()
 param administratorLoginPassword string
@@ -5,7 +6,7 @@ param administratorLoginPassword string
 param tenantID string
 param accountObjectID string = 'fc2cdf01-0d2f-41a9-90f4-25f3064e5344'
 
-var location = 'westus'
+param location string = 'westus'
 var appName = 'webapp'
 
 
@@ -21,11 +22,9 @@ var vnetAddressPrefix = '10.10.30.0/16'
 var subnetName = '${appName}sn'
 var subnetAddressPrefix = '10.10.30.0/24'
 
-//add resource group
-
 @description('SQL Server to host database')
 resource sqlServer 'Microsoft.Sql/servers@2014-04-01' ={
-  name: 'unique name1'
+  name: sqlServerName
   location: location
   properties: {
     administratorLogin: administratorLogin
@@ -44,7 +43,6 @@ resource sqlServerDatabase 'Microsoft.Sql/servers/databases@2014-04-01' = {
  }
 }
 
-
 @description('Connect SQL to AppService over Microsoft backbone')
 resource privateend 'Microsoft.Network/privateEndpoints@2022-07-01' = {
   name: 'SQLtoAPP'
@@ -56,7 +54,6 @@ resource privateend 'Microsoft.Network/privateEndpoints@2022-07-01' = {
      ]
   }
 }
-
 
 
 @description('Store DB Password')
