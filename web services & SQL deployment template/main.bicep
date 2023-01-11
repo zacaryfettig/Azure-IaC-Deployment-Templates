@@ -1,151 +1,64 @@
-param sqlServerName string = 'sqlserver${uniqueString(resourceGroup().id)}'
+//params and variables
+@description('SQL variables')
+param sqlServerName string = 'sqlServer${uniqueString(resourceGroup().id)}'
 param administratorLogin string
 @secure()
 param administratorLoginPassword string
 
-param tenantID string
+@allowed ([
+  'development'
+  'production'
+  ])
+  param environment string
+
+@description('keyVault variables')
+param tenantID string = '09aedc25-108f-49fe-8f2a-8fcf474f365d'
 param accountObjectID string = 'fc2cdf01-0d2f-41a9-90f4-25f3064e5344'
 
 param location string = 'westus'
-var appName = 'webapp'
+
+param appName string = 'webapp'
+param appPlanTier string = 'F1'
 
 
-@allowed ([
-'development'
-'production'
-])
-param environment string
+//params and variables end
 
-@description('vnet')
-var vnetName = '${appName}vnet'
-var vnetAddressPrefix = '10.10.30.0/16'
-var subnetName = '${appName}sn'
-var subnetAddressPrefix = '10.10.30.0/24'
 
-@description('SQL Server to host database')
-resource sqlServer 'Microsoft.Sql/servers@2014-04-01' ={
-  name: sqlServerName
-  location: location
-  properties: {
+@description('SQL Server and Database')
+module sqlServerDatabase 'sql.bicep' = {
+  name: 'sqlModule'
+  params: {
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
+    environment: environment
+    location: location
+    sqlServerName: sqlServerName
   }
 }
 
-@description('SQL Database')
-resource sqlServerDatabase 'Microsoft.Sql/servers/databases@2014-04-01' = {
-  parent: sqlServer
-  name: '${appName}-sqldatabase${environment}'
-  location: location
- sku: {
-  name: 'basic'
-  tier: 'basic'
- }
-}
-
-@description('Connect SQL to AppService over Microsoft backbone')
-resource privateend 'Microsoft.Network/privateEndpoints@2022-07-01' = {
-  name: 'SQLtoAPP'
-  location: location
-  
-  properties: { 
-     privateLinkServiceConnections: [
-     
-     ]
+module networking 'networking.bicep' = {
+  name: 'networkingModule'
+  params: {
+    location: location
   }
 }
 
-
-@description('Store DB Password')
-resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' = {
-  name: 'name'
-  location: location
-  properties: {
-    enabledForDeployment: true
-    enabledForTemplateDeployment: true
-    enabledForDiskEncryption: true
-    tenantId: tenantID
-    accessPolicies: [
-      {
-        tenantId: tenantID
-        objectId: accountObjectID
-        permissions: {
-          keys: [
-            'get'
-          ]
-          secrets: [
-            'list'
-            'get'
-          ]
-        }
-      }
-    ]
-    sku: {
-      name: 'standard'
-      family: 'A' 
-    }
+module keyVault 'keyVault.bicep' = {
+  name: 'keyVaultModule'
+  params: {
+    accountObjectID: accountObjectID
+    administratorLoginPassword: administratorLoginPassword
+    location: location
+    tenantID: tenantID
   }
 }
 
-resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2019-09-01' = {
-  parent: keyVault
-  name: 'sqlPass'
-  properties: {
-    value: administratorLoginPassword
-  }
-}
-
-
-@description('virtual network creation')
-resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
-  name: vnetName
-  location: location
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        vnetAddressPrefix
-      ]
-    }
-    subnets: [
-      {
-        name: subnetName
-        properties: {
-          addressPrefix: subnetAddressPrefix
-          delegations: [
-            {
-              name: 'delegation'
-              properties: {
-                serviceName: 'Microsoft.Web/serverFarms'
-              }
-            }
-          ]
-        }
-      }
-    ]
-  }
-}
-
-resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
-  name: 'name'
-  location: location
-  sku: {
-    //pricing tier
-    name: 'F1'
-    capacity: 1
-  }
-}
-
-resource appService 'Microsoft.Web/sites@2022-03-01' = {
-  name: appName
-  location: location
-  properties: {
-    serverFarmId: appServicePlan.id
-    virtualNetworkSubnetId: vnet.properties.subnets[0].id
-    httpsOnly: true
-    siteConfig: {
-      vnetRouteAllEnabled: true
-      http20Enabled: true
-    }
-
+module appService 'appService.bicep' = {
+  name: 'appServiceModule'
+  params: {
+    appName: appName
+    appPlanTier: appPlanTier
+    location: location
+    virtualNetworkSubnetID: networking.outputs.networkingVnet
   }
 }
