@@ -1,30 +1,16 @@
 # Deploying infrastructure for a web app with SQL based Database
 
 ## Resources created in Template
-* App Service
+* App Service: Hosting Web App using App Service
 
-Hosting Web App using App Service
+* Azure SQL Database Server: Creation of Azure Database service server resource
 
-* Azure SQL Database Server
+* Azure SQL Database: Database storing website database
 
-Creation of Azure Database service server resource
+* Networking VNet: Connect SQL Service to App over private VNet
 
-* Azure SQL Database
+* Private Endpoint: Connecting SQL privatly over vnet
 
-Database storing website database
+* App Service Vnet Integration: Connect App Service privatly to VNet
 
-* Networking VNet
-
-Connect SQL Service to App over private VNet
-
-* Private Endpoint
-
-Connecting SQL privatly over vnet
-
-* App Service Vnet Integration
-
-Connect App Service privatly to VNet
-
-* Key Vault
-
-Store SQL Database password securly in Key Vault. secret is created at template runtime.
+* Key Vault: Store SQL Database password securly in Key Vault. secret is created at template runtime.
