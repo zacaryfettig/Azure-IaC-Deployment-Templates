@@ -4,7 +4,7 @@ Template objective is hosting a .net web app with SQL database while maintaining
 ## Resources created in Template
 * App Service: Hosting Web App using App Service
 
-* Azure SQL Database Server: Creation of Azure Database service server resource
+* Azure SQL Database Server: Creation of Azure Databases server resource
 
 * Azure SQL Database: Database storing website database
 
