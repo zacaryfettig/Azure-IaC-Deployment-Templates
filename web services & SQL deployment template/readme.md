@@ -14,4 +14,4 @@ Template objective is hosting a .net web app with SQL database while maintaining
 
 * App Service Vnet Integration: Connect App Service privatly to VNet
 
-* Key Vault: Store SQL Database password securly in Key Vault. secret is created at template runtime.
+* Key Vault: Store SQL Database Admin password securly in Key Vault. secret is created at template runtime.
