@@ -1,7 +1,7 @@
 //param and variables
 @description('virtual machines param')
 param vmName string = 'vm1'
-param location string = 'westus3'
+param location string = resourceGroup().location
 param adminUsername string = 'User'
 
 @secure()
@@ -54,6 +54,40 @@ resource windowsVM 'Microsoft.Compute/virtualMachines@2020-12-01' = {
 }
 
 
+resource nsg1 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
+  name: 
+  properties: {
+     securityRules: [
+       
+     ]
+  }
+}
+
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2019-11-01' = {
+  name: 'name'
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'nsgRule'
+        properties: {
+          description: 'description'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+          access: 'Allow'
+          priority: 100
+          direction: 'Inbound'
+        }
+      }
+    ]
+  }
+}
+
+
+
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   name: vnetName
   location: location
@@ -68,12 +102,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
         name: 'Subnet-1'
         properties: {
           addressPrefix: '10.0.0.0/24'
-        }
-      }
-      {
-        name: 'Subnet-2'
-        properties: {
-          addressPrefix: '10.0.1.0/24'
+          networkSecurityGroup: {
+           id: nsg1.id
+          }
         }
       }
     ]
