@@ -1,14 +1,29 @@
 //param and variables
 @description('virtual machines param')
-param vmName string = 'vm1'
+param vmName string = 'vmss1'
+param vmSize string = 'standard_DS1_v2'
 param location string = resourceGroup().location
 param adminUsername string = 'User'
+var vmDisk = 'vmssDisk'
+
+@description('vmType')
+var publisher = 'MicrosoftWindowsServer'
+var offer = 'WindowsServer'
+param vmSku string = '2019-Datacenter'
+var version = 'latest'
+
+@description('vmNic')
+var vmNic = 'nic1'
 
 @secure()
-param adminPassword string
+param vmUsername string
+@secure()
+param vmPassword string
 
 @description('VNet param')
 var vnetName = 'vnet1'
+
+
 
 //param and variables
 
@@ -17,22 +32,22 @@ resource windowsVM 'Microsoft.Compute/virtualMachines@2020-12-01' = {
   location: location
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_A2_v2'
+      vmSize: vmSize
     }
     osProfile: {
-      computerName: 'computerName'
-      adminUsername: adminUsername
-      adminPassword: adminPassword
+      computerName: vmName
+      adminUsername: vmUsername
+      adminPassword: vmPassword
     }
     storageProfile: {
       imageReference: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2012-R2-Datacenter'
-        version: 'latest'
+        publisher: publisher
+        offer: offer
+        sku: vmSku
+        version: version
       }
       osDisk: {
-        name: 'name'
+        name: vmDisk
         caching: 'ReadWrite'
         createOption: 'FromImage'
       }
@@ -53,6 +68,26 @@ resource windowsVM 'Microsoft.Compute/virtualMachines@2020-12-01' = {
   }
 }
 
+resource nic 'Microsoft.Network/networkInterfaces@2021-02-01' = {
+  name: vmNic
+  location: location
+  properties: {
+    ipConfigurations: [
+      {
+        name: 'ipconfig1'
+        properties: {
+          privateIPAllocationMethod: 'Dynamic'
+          publicIPAddress: {
+            id: pip.id
+          }
+          subnet: {
+            id: resourceId('Microsoft.Network/virtualNetworks/subnets', vn.name, subnetName)
+          }
+        }
+      }
+    ]
+  }
+}
 
 resource nsg1 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
   name: 
@@ -108,5 +143,76 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
         }
       }
     ]
+  }
+}
+
+
+
+resource loadBalancerInternal 'Microsoft.Network/loadBalancers@2020-11-01' = {
+  name: 'lb1'
+  location: location
+  properties: {
+    frontendIPConfigurations: [
+      {
+        name: 'name'
+        properties: {
+          privateIPAddress: '0.0.0.0'
+          privateIPAllocationMethod: 'Static'
+          subnet: {
+            id: 'subnet.id'
+          }
+        }
+      }
+    ]
+    backendAddressPools: [
+      {
+        name: 'name'
+      }
+    ]
+    loadBalancingRules: [
+      {
+        name: 'name'
+        properties: {
+          frontendIPConfiguration: {
+            id: 'frontendIPConfiguration.id'
+          }
+          backendAddressPool: {
+            id: 'backendAddressPool.id'
+          }
+          protocol: 'Tcp'
+          frontendPort: 80
+          backendPort: 80
+          enableFloatingIP: false
+          idleTimeoutInMinutes: 5
+          probe: {
+            id: 'probe.id'
+          }
+        }
+      }
+    ]
+    probes: [
+      {
+        name: 'name'
+        properties: {
+          protocol: 'Tcp'
+          port: 80
+          intervalInSeconds: 5
+          numberOfProbes: 2
+        }
+      }
+    ]
+  }
+}
+
+resource vmScaleSet 'Microsoft.Compute/virtualMachineScaleSets@2022-08-01' = {
+  name: 
+  location: location
+  sku: {
+     name:vmSku
+     tier: 'standard'
+     capacity: 
+  }
+  properties: {
+    
   }
 }
