@@ -8,6 +8,7 @@ Resource Group: Container to hold resources for use with other templates
 
 new-azsubscriptionDeployment -DeploymentName -Location "yourLocation" -templatefile main.bicep
 
+
 #### Deployment Terms
 DeploymentName: Name of deployment which will also be the name of the resource group
 
