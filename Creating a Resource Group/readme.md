@@ -1,5 +1,5 @@
-# Deploying infrastructure for a web app with SQL based Database
-Template used to create a new Resource Group in a subscription
+# Deploying a new Resource Group in a subscription
+Template used to create a new Resource Group in a Subscription
 
 ## Resources created in Template
 Resource Group: Container to hold resources for use with other templates
