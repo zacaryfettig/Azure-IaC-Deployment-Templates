@@ -1,7 +1,7 @@
 # Deploying a new Resource Group in a subscription
 
 ## Resources created in Template
-Resource Group: Container to group resources
+Resource Group: container to hold Azure resources
 
 ## Resource Deployment
 ```
