@@ -1,5 +1,5 @@
-param location string
-param resourceGroupName string
+param resourceGroupName string = deployment().name
+param location string = deployment().location
 
 targetScope = 'subscription'
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
