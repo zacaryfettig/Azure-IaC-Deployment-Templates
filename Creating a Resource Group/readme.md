@@ -6,7 +6,8 @@ Template used to create a Resource Group in a subscription
 
 --Prompts for resource group name and location at runtime
 
-##Resource Deployment
+## Resource Deployment
+
 new-azsubscriptionDeployment -DeploymentName -Location "yourLocation" -templatefile main.bicep
 
 DeploymentName: Name of deployment which will also be the name of the resource group
