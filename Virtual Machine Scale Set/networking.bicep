@@ -102,3 +102,5 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2022-07-0
     ]
   }
 }
+
+output subnetID string = subnet.id
