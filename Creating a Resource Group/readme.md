@@ -2,7 +2,7 @@
 Template used to create a Resource Group in a subscription
 
 ## Resources created in Template
-* Resource Group: Container to hold resources for use with other templates
+Resource Group: Container to hold resources for use with other templates
 
 ## Resource Deployment
 
