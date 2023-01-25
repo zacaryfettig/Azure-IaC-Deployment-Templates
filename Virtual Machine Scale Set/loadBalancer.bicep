@@ -2,7 +2,7 @@
 param location string
 
 @description('load balancer')
-var loadBalancerName = 'loadBalancerName'
+param loadBalancerName string
 param lbFrontEndName string
 param lbBackEndName string
 var lbProbeName = 'lbProbe'
@@ -27,11 +27,6 @@ resource loadBalancerInternal 'Microsoft.Network/loadBalancers@2022-07-01' = {
     backendAddressPools: [
       {
         name: lbBackEndName
-        properties: {
-loadBalancerBackendAddresses: [
- 
-]
-        }
       }
     ]
     loadBalancingRules: [

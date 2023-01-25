@@ -1,6 +1,6 @@
 //params and variables
 @description('SQL variables')
-param sqlServerName string = 'sqlServer${uniqueString(resourceGroup().id)}'
+param sqlserverName string
 param administratorLogin string
 @secure()
 param administratorLoginPassword string
@@ -32,7 +32,7 @@ module sqlServerDatabase 'sql.bicep' = {
     administratorLoginPassword: administratorLoginPassword
     environment: environment
     location: location
-    sqlServerName: sqlServerName
+    sqlServerName: sqlserverName
   }
 }
 
@@ -40,6 +40,7 @@ module networking 'networking.bicep' = {
   name: 'networkingModule'
   params: {
     location: location
+   privateLinkServiceId: sqlServerDatabase.outputs.sqlserverID
   }
 }
 

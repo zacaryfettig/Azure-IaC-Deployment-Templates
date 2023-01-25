@@ -1,5 +1,7 @@
-param location string
 //param and variables
+param location string
+
+
 @description('VNet param')
 var vnetName = 'vnet1'
 
@@ -12,7 +14,7 @@ param publicIpSku string
 
 @description('public IP')
 var publicIPName = 'publicip1'
-var subnetName = 'Subnet-1'
+var subnetName = 'vnet1/Subnets'
 var publicIPAllocationMethod = 'static'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
@@ -27,12 +29,17 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   }
 }
 
+
 resource subnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' = {
   name: subnetName
+  dependsOn: [
+    virtualNetwork
+  ]
     properties: {
       addressPrefix: '10.0.0.0/24'
+      
       networkSecurityGroup: {
-        id: nsg1.id
+        id: networkSecurityGroup.id
         }
       }
 }
@@ -67,16 +74,6 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2021-02-01' = {
   }
   properties: {
     publicIPAllocationMethod: publicIPAllocationMethod
-  }
-}
-
-//NSG
-resource nsg1 'Microsoft.Network/networkSecurityGroups@2022-07-01' = {
-  name: 'nsg1'
-  properties: {
-     securityRules: [
-       
-     ]
   }
 }
 

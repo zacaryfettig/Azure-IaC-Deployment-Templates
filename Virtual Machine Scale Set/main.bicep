@@ -1,18 +1,22 @@
 //param and variables
-param location string = resourceGroup().location
+param location string
 
 @description('virtual machines param')
-@secure()
-param vmUsername string
+
+param vmUsername string = 'username1'
+
 @secure()
 param vmPassword string
 
 param lbFrontEndName string = 'lbFrontEndName'
 param lbBackEndName string = 'lbBackEndName'
+param loadBalancerName string = 'loadBalancerName'
 
 
 @description('public IP')
 param publicIpSku string = 'standard'
+
+param vmSize string = 'Standard_A1_v2'
 
 //end param and variables
 
@@ -29,19 +33,21 @@ module vmScaleSet 'scaleSet.bicep' = {
   params: {
     location: location
     subnetID: networkingModule.outputs.subnetID
-    vmPassword: vmUsername
-    vmUsername: vmPassword
-    lbBackEndName: lbFrontEndName
-    lbFrontEndName: lbFrontEndName
+    vmPassword: vmPassword
+    vmUsername: vmUsername
+    lbBackEndName: lbBackEndName
+    vmSize: vmSize
+    loadBalancerName: loadBalancerName
   }
 }
 
 module loadBalancer 'loadBalancer.bicep' = {
-  name: 'loadBalancer'
+  name: loadBalancerName
   params: {
     location: location
     subnetID: networkingModule.outputs.subnetID
     lbBackEndName: lbBackEndName
     lbFrontEndName: lbFrontEndName
+    loadBalancerName: loadBalancerName
   }
 }

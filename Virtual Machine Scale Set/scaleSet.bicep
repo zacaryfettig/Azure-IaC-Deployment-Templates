@@ -3,15 +3,17 @@ param location string
 
 param subnetID string
 
-param lbFrontEndName string
 param lbBackEndName string
 
 @description('Scale Set')
-var scaleSetName = 'vmScaleSet'
 param singlePlacementGroup bool = true
 param platformFaultDomainCount int = 1
 param instanceCount int = 3
 var vmScaleSetName = 'vmScaleSet'
+
+param loadBalancerName string
+
+param vmSize string
 
 
 
@@ -38,7 +40,7 @@ resource vmScaleSet1 'Microsoft.Compute/virtualMachineScaleSets@2021-11-01' = {
   name: vmScaleSetName
   location: location
   sku: {
-    name: scaleSetName
+    name: vmSize
     tier: 'Standard'
     capacity: instanceCount
   }
@@ -58,9 +60,9 @@ resource vmScaleSet1 'Microsoft.Compute/virtualMachineScaleSets@2021-11-01' = {
         imageReference: imageReference
       }
       osProfile: {
-        computerNamePrefix: vmScaleSetName
         adminUsername: vmUsername
         adminPassword: vmPassword
+        computerNamePrefix: 'Scale'
       }
       networkProfile: {
         networkInterfaceConfigurations: [
@@ -77,7 +79,7 @@ resource vmScaleSet1 'Microsoft.Compute/virtualMachineScaleSets@2021-11-01' = {
                     }
                     loadBalancerBackendAddressPools: [
                       {
-                        id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', lbFrontEndName, lbBackEndName)
+                        id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', loadBalancerName, lbBackEndName)
                       }
                     ]
                   }
