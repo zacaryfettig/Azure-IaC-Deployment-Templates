@@ -9,3 +9,12 @@ Template objective is hosting a server application that has the ability to size 
 * VNet: network communication between resources
 
 * NSG: securing VM connectivity
+
+## Resource Deployment
+```
+New-AzResourceGroupDeployment -ResourceGroupName "groupName" -TemplateFile main.bicep -DeploymentName scaleset1 -location "location"
+```
+#### Deployment Terms
+DeploymentName: Name of the deployment 
+
+location: valid location for the resource group to be located in
