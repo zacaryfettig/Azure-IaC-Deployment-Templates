@@ -1,4 +1,4 @@
-# VM with Virtual Machine Scale set
+# Virtual Machine Scale Set
 Template objective is hosting a server application that has the ability to size up/down depending on the amount of users
 
 ## Resources created in Template
