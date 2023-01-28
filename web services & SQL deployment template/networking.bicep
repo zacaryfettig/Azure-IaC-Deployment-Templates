@@ -7,7 +7,9 @@ var privateEndpointName = 'SQLtoAPP'
 var vnetName = '${appName}vnet'
 var vnetAddressPrefix = '10.0.0.0/16'
 var subnetName = 'subnet-${appName}'
+var subnetName2 = 'subnet-2${appName}'
 var subnetAddressPrefix = '10.0.0.0/24'
+var subnetAddressPrefix2 = '10.0.1.0/24'
 param privateLinkServiceId string
 
 //end param and variables
@@ -29,7 +31,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-07-01' = {
       }
     ]
     subnet: {
-      id: vnet.properties.subnets[0].id
+      id: vnet.properties.subnets[1].id
     }
   }
 }
@@ -58,6 +60,12 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-06-01' = {
               }
             }
           ]
+        }
+      }
+      {
+        name: subnetName2
+        properties: {
+          addressPrefix: subnetAddressPrefix2
         }
       }
     ]

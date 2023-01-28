@@ -1,9 +1,20 @@
 //params and variables
+param location string = resourceGroup().location
+
 @description('SQL variables')
-param sqlserverName string
+
+@allowed( [
+  'basic'
+  'standard'
+  'premium'
+])
+param SQLedition string
+
+param sqlserverName string = 'sqlServer${uniqueString(deployment().name)}'
 param administratorLogin string
 @secure()
 param administratorLoginPassword string
+
 
 @allowed ([
   'development'
@@ -15,10 +26,9 @@ param administratorLoginPassword string
 param tenantID string = '09aedc25-108f-49fe-8f2a-8fcf474f365d'
 param accountObjectID string = 'fc2cdf01-0d2f-41a9-90f4-25f3064e5344'
 
-param location string = 'westus'
-
-param appName string = 'webapp'
-param appPlanTier string = 'F1'
+@description('webApp')
+param appName string = 'webapp809'
+param appPlanTier string
 
 
 //params and variables end
@@ -33,6 +43,7 @@ module sqlServerDatabase 'sql.bicep' = {
     environment: environment
     location: location
     sqlServerName: sqlserverName
+    SQLedition: SQLedition
   }
 }
 

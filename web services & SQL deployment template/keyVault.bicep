@@ -7,6 +7,7 @@ param accountObjectID string
 param administratorLoginPassword string
 
 param location string
+//var keyVaultName = 'keyVault${uniqueString(deployment().name)}29'
 var keyVaultName = 'keyVault${uniqueString(deployment().name)}'
 
 //end param and variables

@@ -1,9 +1,10 @@
-
+//params and variables
 param location string
 param appName string
 param appPlanTier string
 param virtualNetworkSubnetID string
-var appPlanName = '${appName}-plan'
+var appPlanName = 'appPlan${uniqueString(deployment().name)}'
+//end params and variables
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: appPlanName
@@ -14,6 +15,8 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
     capacity: 1
   }
 }
+
+
 
 resource appService 'Microsoft.Web/sites@2022-03-01' = {
   name: appName
