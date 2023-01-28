@@ -8,7 +8,9 @@ param administratorLoginPassword string
 
 param location string
 //var keyVaultName = 'keyVault${uniqueString(deployment().name)}29'
-var keyVaultName = 'keyVault${uniqueString(deployment().name)}'
+param resourceGroupID string = resourceGroup().id
+param keyVaultName string = 'keyVault${uniqueString(resourceGroupID)}'
+
 
 //end param and variables
 

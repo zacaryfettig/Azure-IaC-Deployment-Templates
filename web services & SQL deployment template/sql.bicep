@@ -1,5 +1,7 @@
 //param and variables
 @description('SQL variables')
+param location string
+
 param sqlServerName string
 param administratorLogin string
 param SQLedition string
@@ -13,9 +15,8 @@ param administratorLoginPassword string
   ])
   param environment string
 
-  param location string
-  var appName = 'webapp'
-  var databaseName = '${appName}-sqldatabase${environment}'
+
+  var databaseName = '${sqlServerName}-sqldatabase${environment}'
 
   //end param and variables
 

@@ -9,8 +9,8 @@ param location string = resourceGroup().location
   'premium'
 ])
 param SQLedition string
-
-param sqlserverName string = 'sqlServer${uniqueString(deployment().name)}'
+//param sqlserverName string = 'sqlServer${uniqueString(resourceGroup().id)}'
+param sqlserverName string
 param administratorLogin string
 @secure()
 param administratorLoginPassword string
