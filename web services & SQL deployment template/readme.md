@@ -21,9 +21,9 @@ Template objective is hosting a .net web app with SQL database while maintaining
 New-AzResourceGroupDeployment -ResourceGroupName "resourceGroup" -SQLedition "edition" -sqlserverName "serverName" -environment "production" -appPlanTier "appPlan" -TemplateFile main.bicep
 ```
 #### Deployment Terms
-SQL edition: tier of SQL server
+SQL edition: options for tier of SQL server in the link https://azure.microsoft.com/en-us/pricing/details/azure-sql-database/single/#pricing
 
-environment: web app development or production staging
+environment: web app development or production staging slot
 
 App Plan Tier: app plan tier options shown in the link
 https://azure.microsoft.com/en-us/pricing/details/app-service/windows/#purchase-options
