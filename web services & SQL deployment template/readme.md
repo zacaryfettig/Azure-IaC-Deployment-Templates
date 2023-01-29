@@ -15,3 +15,17 @@ Template objective is hosting a .net web app with SQL database while maintaining
 * App Service Vnet Integration: Connect App Service privatly to VNet
 
 * Key Vault: Store SQL Database Admin password securly in Key Vault. secret is created at template runtime.
+
+## Resource Deployment
+```
+New-AzResourceGroupDeployment -ResourceGroupName "resourceGroup" -SQLedition "edition" -sqlserverName "serverName" -environment "production" -appPlanTier "appPlan" -TemplateFile main.bicep
+```
+#### Deployment Terms
+SQL edition: tier of SQL server
+
+environment: web app development or production staging
+
+App Plan Tier: app plan options based on the link below
+https://azure.microsoft.com/en-us/pricing/details/app-service/windows/#purchase-options
+
+location: valid location for the resource group to be located in
