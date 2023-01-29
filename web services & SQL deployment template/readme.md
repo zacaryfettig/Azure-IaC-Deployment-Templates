@@ -25,7 +25,7 @@ SQL edition: tier of SQL server
 
 environment: web app development or production staging
 
-App Plan Tier: app plan options based on the link below
+App Plan Tier: app plan options shown in the link
 https://azure.microsoft.com/en-us/pricing/details/app-service/windows/#purchase-options
 
 location: valid location for the resource group to be located in
