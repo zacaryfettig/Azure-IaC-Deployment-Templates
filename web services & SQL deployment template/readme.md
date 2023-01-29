@@ -29,3 +29,5 @@ App Plan Tier: app plan tier options shown in the link
 https://azure.microsoft.com/en-us/pricing/details/app-service/windows/#purchase-options
 
 location: valid location for the resource group to be located in
+
+-Username and password for SQL Server prompted at runtime
