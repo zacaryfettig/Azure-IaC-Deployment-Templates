@@ -30,4 +30,4 @@ https://azure.microsoft.com/en-us/pricing/details/app-service/windows/#purchase-
 
 Location: valid location for the resource group to be located in
 
-Username and Password for SQL Server prompted at runtime
+username and password for SQL Server prompted at runtime
