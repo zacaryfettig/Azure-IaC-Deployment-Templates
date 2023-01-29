@@ -23,11 +23,11 @@ New-AzResourceGroupDeployment -ResourceGroupName "resourceGroup" -SQLedition "ed
 #### Deployment Terms
 SQL edition: options for tier of SQL server in the link https://azure.microsoft.com/en-us/pricing/details/azure-sql-database/single/#pricing
 
-environment: web app development or production staging slot
+Environment: web app development or production staging slot
 
 App Plan Tier: app plan tier options shown in the link
 https://azure.microsoft.com/en-us/pricing/details/app-service/windows/#purchase-options
 
-location: valid location for the resource group to be located in
+Location: valid location for the resource group to be located in
 
-Username and password for SQL Server prompted at runtime
+username and password for SQL Server prompted at runtime
